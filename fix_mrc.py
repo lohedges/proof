@@ -1,5 +1,6 @@
 import sys
 
+
 def fix_file(filename: str) -> None:
     """
     Take an MRC file which was written by MotionCor2 and fix it so that it has
@@ -11,6 +12,7 @@ def fix_file(filename: str) -> None:
         if map_id == b"MAP\x00":
             f.seek(211)
             f.write(b"\x20")
+
 
 if __name__ == "__main__":
     filenames = sys.argv[1:]
