@@ -1,2 +1,3 @@
 mrcfile
 matplotlib
+scikit-image
