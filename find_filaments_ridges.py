@@ -38,7 +38,7 @@ for f in Path(".").glob("*.mrc"):
 
     #image_fig = plt.figure(figsize=(10, 9))
     #image_ax = image_fig.subplots()
-    #image_ax.imshow(ridges, cmap="bone")
+    #image_ax.imshow(eroded, cmap="bone")
 
     #image_fig = plt.figure(figsize=(10, 9))
     #image_ax = image_fig.subplots()
@@ -46,7 +46,7 @@ for f in Path(".").glob("*.mrc"):
 
     cv_image_fig = plt.figure(figsize=(10, 9))
     cv_image_ax = cv_image_fig.subplots()
-    cv_image_ax.imshow(d, cmap="bone")
+    cv_image_ax.imshow(d_cv, cmap="bone")
     for x1, y1, x2, y2 in (l[0] for l in lines):
         cv_image_ax.plot((x1, x2), (y1, y2), color="red")
 
