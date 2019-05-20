@@ -1,3 +1,4 @@
 mrcfile
 matplotlib
 scikit-image
+opencv-contrib-python
