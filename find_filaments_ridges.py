@@ -16,8 +16,8 @@ for f in Path(".").glob("*.mrc"):
 
     d = exposure.equalize_hist(d)
     scale = 8
-    d = cv2.resize(d, (int(d.shape[0]/scale), int(d.shape[0]/scale)), interpolation=cv2.INTER_AREA)
     d_cv = (d * 255).astype(np.uint8)
+    d_cv = cv2.resize(d_cv, (int(d.shape[0]/scale), int(d.shape[0]/scale)), interpolation=cv2.INTER_AREA)
     blur = cv2.GaussianBlur(d_cv, (7, 7), 3)
 
     ridge_filter = cv2.ximgproc.RidgeDetectionFilter_create(ksize=3)
