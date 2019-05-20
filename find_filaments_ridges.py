@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import mrcfile
-from skimage import exposure, transform
+from skimage import exposure
 
 for f in Path(".").glob("*.mrc"):
     with mrcfile.open(f) as mrc:
@@ -20,14 +20,16 @@ for f in Path(".").glob("*.mrc"):
     d_cv = cv2.resize(d_cv, (int(d.shape[0]/scale), int(d.shape[0]/scale)), interpolation=cv2.INTER_AREA)
     blur = cv2.GaussianBlur(d_cv, (7, 7), 3)
 
+    # Tune the kernel size
     ridge_filter = cv2.ximgproc.RidgeDetectionFilter_create(ksize=3)
     ridges = ridge_filter.getRidgeFilteredImage(blur)
 
     erosion_size = 1
     element_d = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2*erosion_size + 1, 2*erosion_size+1), (erosion_size, erosion_size))
     eroded = cv2.erode(ridges, element_d)
-    _, th3 = cv2.threshold(eroded, 240, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    _, th3 = cv2.threshold(eroded, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
+    # The Hough line parameters need to be tuned as well
     lines = cv2.HoughLinesP(th3, 1, np.pi / 180, threshold=50, minLineLength=10, maxLineGap=3)
 
     end = time.time()
