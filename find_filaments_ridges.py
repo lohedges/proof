@@ -16,7 +16,7 @@ for f in Path(".").glob("*.mrc"):
 
     d = exposure.equalize_hist(d)
     scale = 8
-    d = transform.resize(d, (int(d.shape[0]/scale), int(d.shape[0]/scale)))
+    d = cv2.resize(d, (int(d.shape[0]/scale), int(d.shape[0]/scale)), interpolation=cv2.INTER_AREA)
     d_cv = (d * 255).astype(np.uint8)
     blur = cv2.GaussianBlur(d_cv, (7, 7), 3)
 
