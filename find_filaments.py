@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import mrcfile
@@ -12,6 +13,17 @@ def extract_edge_segments(d: np.ndarray) -> list:
     """
     edges = feature.canny(d, sigma=2)
     lines = transform.probabilistic_hough_line(edges, threshold=5, line_length=7, line_gap=2)
+    return lines
+
+
+def extract_edge_segments2(d: np.ndarray) -> list:
+    """
+    Given an image, ``d``, extract line segments along the edges
+    """
+    d_cv = (d * 255).astype(np.uint8)
+    blur = cv2.GaussianBlur(d_cv, (7, 7), 3)
+    edges = cv2.Canny(blur, 25, 75, apertureSize=3)
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=50, minLineLength=3, maxLineGap=2)
     return lines
 
 
@@ -39,7 +51,6 @@ for f in Path(".").glob("*.mrc"):
     d = exposure.equalize_hist(d)
     scale = 8
     d = transform.resize(d, (int(d.shape[0]/scale), int(d.shape[0]/scale)))
-    d = filters.gaussian(d, sigma=0.5)
 
     lines = extract_edge_segments(d)
     merged_lines = merge_line_segments(lines)
@@ -48,17 +59,17 @@ for f in Path(".").glob("*.mrc"):
     image_fig = plt.figure(figsize=(10, 9))
     image_ax = image_fig.subplots()
     image_ax.imshow(d, cmap="bone")#, vmin=29)#, vmax=27)
-
-    #edges_fig = plt.figure(figsize=(10, 9))
-    #edges_ax = edges_fig.subplots()
-    #edges_ax.imshow(edges)
-
     for p0, p1 in lines:
         image_ax.plot((p0[0], p1[0]), (p0[1], p1[1]), color="red")
 
-    #fig = plt.figure(figsize=(10, 9))
-    #ax = fig.subplots()
-    #ax.hist(d.ravel(), bins=1000)
+    cv2_lines = extract_edge_segments2(d)
+
+    cv_image_fig = plt.figure(figsize=(10, 9))
+    cv_image_ax = cv_image_fig.subplots()
+    cv_image_ax.imshow(d, cmap="bone")
+    for x1, y1, x2, y2 in (l[0] for l in cv2_lines):
+        cv_image_ax.plot((x1, x2), (y1, y2), color="red")
+
     plt.show()
 
     #break
