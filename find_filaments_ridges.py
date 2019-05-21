@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import mrcfile
-from skimage import exposure
 
 for f in Path(".").glob("*.mrc"):
     with mrcfile.open(f) as mrc:
@@ -14,9 +13,10 @@ for f in Path(".").glob("*.mrc"):
 
     start = time.time()
 
-    d = exposure.equalize_hist(d)
+    shifted = (d - d.min()) / ((d.max() - d.min()) / 255)
+    d_cv = shifted.astype(np.uint8)
+    d_cv = cv2.equalizeHist(d_cv)
     scale = 8
-    d_cv = (d * 255).astype(np.uint8)
     d_cv = cv2.resize(d_cv, (int(d.shape[0]/scale), int(d.shape[0]/scale)), interpolation=cv2.INTER_AREA)
     blur = cv2.GaussianBlur(d_cv, (7, 7), 3)
 
