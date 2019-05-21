@@ -15,12 +15,15 @@ for f in Path(".").glob("*.mrc"):
     start = time.time()
 
     d = image.normalise_8bit(d)
-    d_cv = cv2.equalizeHist(d)
-    scale = 8
-    d_cv = cv2.resize(d_cv, (int(d.shape[0]/scale), int(d.shape[0]/scale)), interpolation=cv2.INTER_AREA)
+    d_equalised = cv2.equalizeHist(d)
+    d_cv = image.scale_down(d_equalised, 8)
     blur = cv2.GaussianBlur(d_cv, (7, 7), 3)
 
-    lines = image.find_lines(blur)
+    image_for_blobs = cv2.GaussianBlur(image.scale_down(d_equalised, 4), (7, 7), 3)
+    blob_mask = image.find_blobs(image_for_blobs)
+    blob_mask = image.scale_down(blob_mask, 2)
+
+    lines = image.find_lines(blur, threshold_mask=blob_mask)
 
     end = time.time()
     print(end - start)
