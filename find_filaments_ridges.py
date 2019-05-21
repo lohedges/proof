@@ -28,15 +28,6 @@ for f in Path(".").glob("*.mrc"):
     end = time.time()
     print(end - start)
 
-
-    #image_fig = plt.figure(figsize=(10, 9))
-    #image_ax = image_fig.subplots()
-    #image_ax.imshow(eroded, cmap="bone")
-
-    #image_fig = plt.figure(figsize=(10, 9))
-    #image_ax = image_fig.subplots()
-    #image_ax.imshow(th3, cmap="bone")
-
     cv_image_fig = plt.figure(figsize=(10, 9))
     cv_image_ax = cv_image_fig.subplots()
     cv_image_ax.imshow(d_cv, cmap="bone")
