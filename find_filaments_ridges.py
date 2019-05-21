@@ -17,7 +17,7 @@ for f in Path(".").glob("*.mrc"):
     d_max = d.max()
     shifted = d - d_min
     shifted /= ((d_max - d_min) / 255)
-    d_cv = d.astype(np.uint8)
+    d_cv = shifted.astype(np.uint8)
     d_cv = cv2.equalizeHist(d_cv)
     scale = 8
     d_cv = cv2.resize(d_cv, (int(d.shape[0]/scale), int(d.shape[0]/scale)), interpolation=cv2.INTER_AREA)
