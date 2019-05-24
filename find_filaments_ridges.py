@@ -23,7 +23,7 @@ for f in Path(".").glob("*.mrc"):
     blob_mask = image.find_blobs(image_for_blobs)
     blob_mask = image.scale_down(blob_mask, 2)
 
-    lines = image.find_lines(blur, threshold_mask=blob_mask)
+    raw_lines = image.find_lines(blur, threshold_mask=blob_mask)
 
     end = time.time()
     print(end - start)
@@ -31,7 +31,7 @@ for f in Path(".").glob("*.mrc"):
     cv_image_fig = plt.figure(figsize=(10, 9))
     cv_image_ax = cv_image_fig.subplots()
     cv_image_ax.imshow(d_cv, cmap="bone")
-    for x1, y1, x2, y2 in lines:
+    for x1, y1, x2, y2 in raw_lines:
         cv_image_ax.plot((x1, x2), (y1, y2), color="red")
 
     plt.show()
