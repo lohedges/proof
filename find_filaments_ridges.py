@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import mrcfile
 
 import image
+import lsm
 
 for f in Path(".").glob("*.mrc"):
     with mrcfile.open(f) as mrc:
@@ -26,13 +27,24 @@ for f in Path(".").glob("*.mrc"):
     raw_lines = image.find_lines(blur, threshold_mask=blob_mask)
 
     end = time.time()
-    print(end - start)
+    print("Line finding", end - start)
+
+    line_segments = []
+    for x1, y1, x2, y2 in raw_lines:
+        l = lsm.LineSegment(x1, y1, x2, y2)
+        line_segments.append(l)
+
+
+    start = time.time()
+    merged_lines = lsm.merge_lines(line_segments, tau_theta=0.01, xi_s=20)
+    end = time.time()
+    print("Merging:", end - start)
 
     cv_image_fig = plt.figure(figsize=(10, 9))
     cv_image_ax = cv_image_fig.subplots()
     cv_image_ax.imshow(d_cv, cmap="bone")
-    for x1, y1, x2, y2 in raw_lines:
-        cv_image_ax.plot((x1, x2), (y1, y2), color="red")
+    for line in merged_lines:
+        cv_image_ax.plot((line.x1, line.x2), (line.y1, line.y2), color="red")
 
     plt.show()
 
