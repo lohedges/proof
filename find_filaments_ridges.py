@@ -36,7 +36,7 @@ for f in Path(".").glob("*.mrc"):
 
 
     start = time.time()
-    merged_lines = lsm.merge_lines(line_segments, tau_theta=0.01, xi_s=20)
+    merged_lines = lsm.merge_lines(line_segments, tau_theta=0.04, xi_s=0.5)
     end = time.time()
     print("Merging:", end - start)
 
