@@ -53,7 +53,7 @@ def find_lines(d, threshold_mask=None) -> list:
 
     # The Hough line parameters need to be tuned as well
     lines = cv2.HoughLinesP(masked, 1, np.pi / 180, threshold=50, minLineLength=10, maxLineGap=3)
-    return [l[0] for l in lines]
+    return lines[:, 0, :]
 
 
 def find_blobs(d):
