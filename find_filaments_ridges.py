@@ -28,6 +28,8 @@ for f in Path(".").glob("*.mrc"):
     thresholded = image.find_threshold(blur, threshold_mask=blob_mask)
     centres = image.find_centre_lines(thresholded)
 
+    distances = cv2.distanceTransform(cv2.bitwise_not(centres), distanceType=cv2.DIST_L2, maskSize=cv2.DIST_MASK_PRECISE)
+
     end = time.time()
     print("Line finding", end - start)
 
@@ -37,6 +39,10 @@ for f in Path(".").glob("*.mrc"):
     overlay = np.where(centres, 3, np.nan)
     plt.cm.Set1.set_bad(color="#00000000")
     cv_image_ax.imshow(overlay, cmap='Set1')
+
+    cv_image_fig = plt.figure(figsize=(10, 9))
+    cv_image_ax = cv_image_fig.subplots()
+    cv_image_ax.imshow(distances, cmap="bone")
 
     plt.show()
 
