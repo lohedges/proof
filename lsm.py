@@ -60,6 +60,7 @@ def merge_lines(L, tau_theta, xi_s):
 
                 if M is not None:
                     L[i] = M
+                    L_1 = M
                     R.append(L_2)
             # The following is slow and bad. We should find a different way
             # Probably give all segments a unique ID and match by that
