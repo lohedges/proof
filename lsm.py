@@ -81,7 +81,17 @@ def filter_by_angle(L, L1, tau_theta):
 
 def filter_by_position(L, L1, tau_s):
     for L2 in L:
-        if abs(L2.length - L1.length) < tau_s:
+        if (
+                abs(L1.x1 - L2.x1) < tau_s or
+                abs(L1.x1 - L2.x2) < tau_s or
+                abs(L1.x2 - L2.x1) < tau_s or
+                abs(L1.x2 - L2.x2) < tau_s
+        ) and (
+                abs(L1.y1 - L2.y1) < tau_s or
+                abs(L1.y1 - L2.y2) < tau_s or
+                abs(L1.y2 - L2.y1) < tau_s or
+                abs(L1.y2 - L2.y2) < tau_s
+        ):
             yield L2
 
 
