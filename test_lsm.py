@@ -31,6 +31,16 @@ def test_merge_simple():
     assert merge_lines(L, 1, 1) == [LineSegment(0, 0, 10, 11)]
 
 
+def test_merge_two_in_almost_line():
+    L = [LineSegment(454, 212, 457, 160), LineSegment(458, 171, 458, 152)]
+    assert merge_lines(L, 1, 1) == [LineSegment(454, 212, 458, 152)]
+
+
+def test_merge_three_in_almost_line():
+    L = [LineSegment(454, 212, 457, 160), LineSegment(458, 171, 458, 152), LineSegment(452, 231, 454, 191)]
+    assert merge_lines(L, 1, 1) == [LineSegment(452, 231, 458, 152)]
+
+
 def test_merge_two_trivial():
     L_1 = LineSegment(0, 0, 10, 10)
     L_2 = LineSegment(0, 0, 10, 10)
