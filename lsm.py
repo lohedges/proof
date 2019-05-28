@@ -36,6 +36,13 @@ class LineSegment:
         return hash((self.x1, self.y1, self.x2, self.y2))
 
 
+def angle_difference(a1, a2):
+    r = (a2 - a1) % (math.pi*2)
+    if r >= math.pi:
+        r -= (math.pi*2)
+    return r
+
+
 def merge_lines(L, tau_theta, xi_s):
     while True:
         n = len(L)
@@ -69,8 +76,7 @@ def merge_lines(L, tau_theta, xi_s):
 
 def filter_by_angle(L, L1, tau_theta):
     for L2 in L:
-        # TODO clock algebra
-        if L2.angle - L1.angle < tau_theta:
+        if angle_difference(L2.angle, L1.angle) < tau_theta:
             yield L2
 
 
@@ -101,12 +107,12 @@ def merge_two_lines(L_1, L_2, xi_s, tau_theta):
 
     tau_theta_star = adaptive_spatial_proximity_threshold(tau_theta, l_1, l_2, d, tau_s)
 
-    theta = abs(theta_2 - theta_1)  # TODO clock algebra
+    theta = angle_difference(theta_2, theta_1)
 
     if theta < tau_theta_star or theta > (math.pi - tau_theta_star):
         M = extreme_points(L_1, L_2)
         theta_M = M.angle
-        if abs(theta_1 - theta_M) > 0.5 * tau_theta:  # TODO clock algebra
+        if angle_difference(theta_1, theta_M) > 0.5 * tau_theta:
             M = None
     else:
         M = None
