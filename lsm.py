@@ -1,3 +1,7 @@
+"""
+http://faculty.pucit.edu.pk/nazarkhan/work/line_merging/Line%20Segment%20Merging%20(LSM).pdf
+"""
+
 import math
 
 import numpy as np
