@@ -1,6 +1,8 @@
 import math
 
-from lsm import LineSegment, merge_lines, merge_two_lines
+import pytest
+
+from lsm import LineSegment, merge_lines, merge_two_lines, angle_difference
 
 
 def test_linesegment_length():
@@ -45,3 +47,13 @@ def test_merge_two_separate():
     L_1 = LineSegment(0, 0, 2, 0)
     L_2 = LineSegment(5, 0, 7, 0)
     assert merge_two_lines(L_1, L_2, 1, 1) is None
+
+
+@pytest.mark.parametrize("a, b, expected", [
+    (0, 0, 0),
+    (0, -math.pi, 0),
+    (-math.pi/2, math.pi/2, 0),
+    (-math.pi*(3/4), math.pi*(3/4), math.pi/2),
+])
+def test_angle_difference(a, b, expected):
+    assert angle_difference(a, b) == expected

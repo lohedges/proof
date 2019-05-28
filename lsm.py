@@ -36,11 +36,10 @@ class LineSegment:
         return hash((self.x1, self.y1, self.x2, self.y2))
 
 
-def angle_difference(a1, a2):
-    r = (a2 - a1) % (math.pi*2)
-    if r >= math.pi:
-        r -= (math.pi*2)
-    return r
+def angle_difference(a, b):
+    r = a - b
+    r = (r + math.pi/2) % math.pi - math.pi/2
+    return abs(r)
 
 
 def merge_lines(L, tau_theta, xi_s):
