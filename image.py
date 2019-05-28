@@ -56,6 +56,43 @@ def find_lines(d, threshold_mask=None) -> list:
     return lines[:, 0, :]
 
 
+def find_threshold(d, threshold_mask=None) -> list:
+    # Tune the kernel size
+    ridge_filter = cv2.ximgproc.RidgeDetectionFilter_create(ksize=3)
+    ridges = ridge_filter.getRidgeFilteredImage(d)
+
+    erosion_size = 1
+    element_d = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * erosion_size + 1, 2 * erosion_size + 1),
+                                          (erosion_size, erosion_size))
+    eroded = cv2.erode(ridges, element_d)
+    eroded = cv2.dilate(eroded, element_d)
+    _, th3 = cv2.threshold(eroded, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    if threshold_mask is not None:
+        masked = ((th3 / 255.0 * threshold_mask / 255.0) * 255).astype(np.uint8)
+    else:
+        masked = th3
+
+    return masked
+
+
+def find_centre_lines(image):
+    skeleton = cv2.ximgproc.thinning(image, thinningType=cv2.ximgproc.THINNING_ZHANGSUEN)
+
+    components = cv2.connectedComponents(skeleton, connectivity=8)[1]  # TODO Use connectedComponentsWithStats()?
+
+    # Remove any components which are small
+    unique, counts = np.unique(components, return_counts=True)
+    keep_components = np.where(np.logical_and(10 < counts, counts < components.size / 10), unique, 0)
+    with np.nditer(components, op_flags=['readwrite']) as it:
+        for x in it:
+            if x not in keep_components:
+                x[...] = 0
+
+    centres = np.where(components != 0, 255, 0).astype(np.uint8)
+    return centres
+
+
 def find_blobs(d):
     _, th3 = cv2.threshold(d, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     erosion_size = 4
@@ -63,6 +100,7 @@ def find_blobs(d):
                                           (erosion_size, erosion_size))
     eroded = cv2.dilate(th3, element_d)
     eroded = cv2.dilate(eroded, element_d)
+    eroded = cv2.erode(eroded, element_d)
     eroded = cv2.erode(eroded, element_d)
     eroded = cv2.erode(eroded, element_d)
     eroded = cv2.erode(eroded, element_d)
