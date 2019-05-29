@@ -10,7 +10,7 @@ import image
 import lsm
 
 for f in Path(".").glob("*.mrc"):
-    with mrcfile.open(f) as mrc:
+    with mrcfile.open(f, permissive=True) as mrc:
         h = mrc.header
         d = mrc.data
 
