@@ -2,5 +2,6 @@ pytest
 mrcfile
 matplotlib
 scikit-image
+scikit-learn
 opencv-contrib-python
 pandas

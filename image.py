@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import sklearn.linear_model
 
 
 def normalise_8bit(d):
@@ -111,3 +112,15 @@ def find_blobs(d):
 
 def scale_down(d, scale):
     return cv2.resize(d, (int(d.shape[0] / scale), int(d.shape[0] / scale)), interpolation=cv2.INTER_AREA)
+
+
+def adjust_gradient(image):
+    m, n = image.shape
+    R, C = np.mgrid[:m, :n]
+    out = np.column_stack((C.ravel(), R.ravel(), image.ravel()))
+
+    reg = sklearn.linear_model.LinearRegression().fit(out[:, 0:2], out[:, 2])
+
+    plane = np.fromfunction(lambda x, y: y * reg.coef_[0] + x * reg.coef_[1] + reg.intercept_, image.shape)
+
+    return image - plane
