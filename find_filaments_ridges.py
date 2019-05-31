@@ -16,18 +16,22 @@ for f in Path(".").glob("*.mrc"):
 
     start = time.time()
 
-    d = image.normalise_8bit(d)
-    d_equalised = cv2.equalizeHist(d)
-    d_cv = image.scale_down(d_equalised, 8)
+    d_cv = image.scale_down(d, 8)
+    d_cv = image.adjust_gradient(d_cv)
+    d_cv = image.normalise_8bit(d_cv)
     blur = cv2.GaussianBlur(d_cv, (7, 7), 3)
 
-    image_for_blobs = cv2.GaussianBlur(image.scale_down(d_equalised, 4), (7, 7), 3)
+    image_for_blobs = image.scale_down(d, 4)
+    image_for_blobs = image.adjust_gradient(image_for_blobs)
+    image_for_blobs = image.normalise_8bit(image_for_blobs)
+    image_for_blobs = cv2.GaussianBlur(image_for_blobs, (7, 7), 3)
     blob_mask = image.find_blobs(image_for_blobs)
     blob_mask = image.scale_down(blob_mask, 2)
 
     thresholded = image.find_threshold(blur, threshold_mask=blob_mask)
     centres = image.find_centre_lines(thresholded)
 
+    # TODO Maybe look at fast arguments for this
     distances = cv2.distanceTransform(cv2.bitwise_not(centres), distanceType=cv2.DIST_L2, maskSize=cv2.DIST_MASK_PRECISE)
 
     end = time.time()
