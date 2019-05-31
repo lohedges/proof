@@ -68,6 +68,7 @@ def find_threshold(d, threshold_mask=None) -> list:
     eroded = cv2.erode(ridges, element_d)
     eroded = cv2.dilate(eroded, element_d)
     _, th3 = cv2.threshold(eroded, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    th3 = cv2.dilate(th3, element_d)
 
     if threshold_mask is not None:
         masked = ((th3 / 255.0 * threshold_mask / 255.0) * 255).astype(np.uint8)
