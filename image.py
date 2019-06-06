@@ -57,7 +57,19 @@ def find_lines(d, threshold_mask=None) -> list:
     return lines[:, 0, :]
 
 
-def find_threshold(d, threshold_mask=None) -> list:
+def find_thresholded_ridges(d, threshold_mask=None) -> list:
+    """
+    Given an image, find the thresholded ridges.
+
+    Args:
+        d: the image file to be processed
+        threshold_mask: an images of the same size as ``d`` which
+                        will be applied to the post thresholding
+                        image before returning
+
+    Returns: an image representing where there are ridges
+    """
+
     # Tune the kernel size
     ridge_filter = cv2.ximgproc.RidgeDetectionFilter_create(ksize=3)
     ridges = ridge_filter.getRidgeFilteredImage(d)

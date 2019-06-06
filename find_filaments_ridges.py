@@ -28,7 +28,7 @@ for f in Path(".").glob("*.mrc"):
     blob_mask = image.find_blobs(image_for_blobs)
     blob_mask = image.scale_down(blob_mask, 2)
 
-    thresholded = image.find_threshold(blur, threshold_mask=blob_mask)
+    thresholded = image.find_thresholded_ridges(blur, threshold_mask=blob_mask)
     centres = image.find_centre_lines(thresholded)
 
     # TODO Maybe look at fast arguments for this
