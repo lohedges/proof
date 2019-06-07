@@ -114,7 +114,7 @@ def merge_two_lines(L_1, L_2, xi_s, tau_theta):
         l_1, l_2 = l_2, l_1
         theta_1, theta_2 = theta_2, theta_1
 
-    d = closest_end_points(L_1, L_2)
+    d = closest_end_points(L_1, L_2).length
 
     tau_s = xi_s * l_1
 
@@ -146,7 +146,7 @@ def closest_end_points(L_1, L_2):
 
     shortest = min(contenders, key=lambda x: x.length)
 
-    return shortest.length
+    return shortest
 
 
 def adaptive_spatial_proximity_threshold(tau_theta, l_1, l_2, d, tau_s):
