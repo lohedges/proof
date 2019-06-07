@@ -2,10 +2,17 @@
 http://faculty.pucit.edu.pk/nazarkhan/work/line_merging/Line%20Segment%20Merging%20(LSM).pdf
 """
 
+from dataclasses import dataclass
 import math
 
 import numpy as np
 from scipy.spatial.distance import pdist
+
+
+@dataclass(frozen=True)
+class Point:
+    x: float
+    y: float
 
 
 class LineSegment:
@@ -17,6 +24,14 @@ class LineSegment:
 
         self._length = None
         self._angle = None
+
+    @property
+    def p1(self):
+        return Point(self.x1, self.y1)
+
+    @property
+    def p2(self):
+        return Point(self.x2, self.y2)
 
     @property
     def length(self):
