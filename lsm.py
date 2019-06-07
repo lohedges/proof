@@ -40,7 +40,10 @@ class LineSegment:
         return hash((self.x1, self.y1, self.x2, self.y2))
 
 
-def angle_difference(a, b):
+def abs_angle_difference(a, b):
+    """
+    Find the difference between two angles, treating anti-parallel as 0
+    """
     r = a - b
     r = (r + math.pi/2) % math.pi - math.pi/2
     return abs(r)
@@ -80,7 +83,7 @@ def merge_lines(L, tau_theta, xi_s):
 
 def filter_by_angle(L, L1, tau_theta):
     for L2 in L:
-        if angle_difference(L2.angle, L1.angle) < tau_theta:
+        if abs_angle_difference(L2.angle, L1.angle) < tau_theta:
             yield L2
 
 
@@ -121,12 +124,12 @@ def merge_two_lines(L_1, L_2, xi_s, tau_theta):
 
     tau_theta_star = adaptive_spatial_proximity_threshold(tau_theta, l_1, l_2, d, tau_s)
 
-    theta = angle_difference(theta_2, theta_1)
+    theta = abs_angle_difference(theta_2, theta_1)
 
     if theta < tau_theta_star or theta > (math.pi - tau_theta_star):
         M = extreme_points(L_1, L_2)
         theta_M = M.angle
-        if angle_difference(theta_1, theta_M) > 0.5 * tau_theta:
+        if abs_angle_difference(theta_1, theta_M) > 0.5 * tau_theta:
             M = None
     else:
         M = None

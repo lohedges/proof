@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from lsm import LineSegment, merge_lines, merge_two_lines, angle_difference
+from lsm import LineSegment, merge_lines, merge_two_lines, abs_angle_difference
 
 
 def test_linesegment_length():
@@ -65,5 +65,5 @@ def test_merge_two_separate():
     (-math.pi/2, math.pi/2, 0),
     (-math.pi*(3/4), math.pi*(3/4), math.pi/2),
 ])
-def test_angle_difference(a, b, expected):
-    assert angle_difference(a, b) == expected
+def test_abs_angle_difference(a, b, expected):
+    assert abs_angle_difference(a, b) == expected
