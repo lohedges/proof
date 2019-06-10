@@ -26,21 +26,21 @@ class LineSegment:
         self._angle = None
 
     @property
-    def p1(self):
+    def p1(self) -> Point:
         return Point(self.x1, self.y1)
 
     @property
-    def p2(self):
+    def p2(self) -> Point:
         return Point(self.x2, self.y2)
 
     @property
-    def length(self):
+    def length(self) -> float:
         if self._length is None:
             self._length = math.sqrt(pow(self.x2 - self.x1, 2) + pow(self.y2 - self.y1, 2))
         return self._length
 
     @property
-    def angle(self):
+    def angle(self) -> float:
         if self._angle is None:
             self._angle = math.atan2(self.y2 - self.y1, self.x2 - self.x1)
         return self._angle
@@ -55,7 +55,7 @@ class LineSegment:
         return hash((self.x1, self.y1, self.x2, self.y2))
 
 
-def abs_angle_difference(a, b):
+def abs_angle_difference(a: float, b: float) -> float:
     """
     Find the difference between two angles, treating anti-parallel as 0
     """
