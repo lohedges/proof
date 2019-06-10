@@ -8,6 +8,7 @@ import numpy as np
 
 import image
 import lsm
+from trace_filament import trace_filaments
 
 for f in Path(".").glob("*.mrc"):
     with mrcfile.open(f, permissive=True) as mrc:
@@ -34,30 +35,23 @@ for f in Path(".").glob("*.mrc"):
     # TODO Maybe look at fast arguments for this
     distances = cv2.distanceTransform(cv2.bitwise_not(centres), distanceType=cv2.DIST_L2, maskSize=cv2.DIST_MASK_PRECISE)
 
-    contours = cv2.findContours(centres.astype(np.uint8), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    lines = cv2.HoughLinesP(centres, 1, np.pi / 180, threshold=10, minLineLength=5, maxLineGap=5)[:, 0, :]
+    line_segments = [lsm.LineSegment(x1, y1, x2, y2) for x1, y1, x2, y2 in lines]
+    merged_lines = lsm.merge_lines(line_segments, tau_theta=0.1, xi_s=0.5)
+    polys = trace_filaments(merged_lines)
 
     end = time.time()
     print("Line finding", end - start)
 
-    cv_image_fig = plt.figure(figsize=(10, 9))
-    cv_image_ax = cv_image_fig.subplots()
-    cv_image_ax.imshow(d_cv, cmap="bone")
-    overlay = np.where(centres, 3, np.nan)
-    plt.cm.Set1.set_bad(color="#00000000")
-    cv_image_ax.imshow(overlay, cmap='Set1')
-    cv_image_ax.set_xlim(365, 405)
-    cv_image_ax.set_ylim(300, 260)
+    fig, ax = plt.subplots(figsize=(10, 9))
+    ax.imshow(d_cv, cmap='bone', alpha=0.99)
 
-    from matplotlib.lines import Line2D
-    cv_image_fig = plt.figure(figsize=(10, 9))
-    cv_image_ax = cv_image_fig.subplots()
-    cv_image_ax.imshow(d_cv, cmap="bone")
-    cv_image_ax.set_xlim(365, 405)
-    cv_image_ax.set_ylim(300, 260)
-    for c in contours[0][30:30+1]:
-        c = c[:, 0, :]
-        line = Line2D(c[:, 0], c[:, 1])
-        cv_image_ax.add_line(line)
+    for poly in polys:
+        if poly.length < 30:
+            continue
+        x = [p.x for p in poly.points]
+        y = [p.y for p in poly.points]
+        ax.plot(x, y, linewidth=5, alpha=0.8)
 
     plt.show()
 
