@@ -110,13 +110,10 @@ def find_centre_lines(image):
 
 def find_blobs(d):
     _, th3 = cv2.threshold(d, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    erosion_size = 4
+    erosion_size = 8
     element_d = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * erosion_size + 1, 2 * erosion_size + 1),
                                           (erosion_size, erosion_size))
     eroded = cv2.dilate(th3, element_d)
-    eroded = cv2.dilate(eroded, element_d)
-    eroded = cv2.erode(eroded, element_d)
-    eroded = cv2.erode(eroded, element_d)
     eroded = cv2.erode(eroded, element_d)
     eroded = cv2.erode(eroded, element_d)
 
