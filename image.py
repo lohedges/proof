@@ -97,7 +97,8 @@ def find_centre_lines(image):
 
     # Remove any components which are small
     unique, counts = np.unique(components, return_counts=True)
-    keep_components = np.where(np.logical_and(10 < counts, counts < components.size / 10), unique, 0)
+    min_component_size = 10
+    keep_components = np.where(np.logical_and(min_component_size < counts, counts < components.size / 10), unique, 0)
     with np.nditer(components, op_flags=['readwrite']) as it:
         for x in it:
             if x not in keep_components:
