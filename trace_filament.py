@@ -7,16 +7,26 @@ import lsm
 
 @dataclass
 class Connector:
+    """
+    A short connective segments between two other segments.
+    """
     a: lsm.LineSegment
     b: lsm.LineSegment
     connector: lsm.LineSegment
 
 
 class PolyLine:
+    """
+    A set of line segments, joined together into a linear path
+    """
     def __init__(self, l: lsm.LineSegment):
         self.points = [l.p1, l.p2]
 
     def append(self, other: lsm.LineSegment):
+        """
+        Add a line segment to the poly-line.
+        It will automatically attach it in the correct place.
+        """
         if other.p1 == self.points[0]:
             self.points.insert(0, other.p2)
         elif other.p1 == self.points[-1]:
@@ -37,6 +47,11 @@ class PolyLine:
 
 
 def trace_filaments(lines: List[lsm.LineSegment]) -> List[PolyLine]:
+    """
+    Given a set of line segments, merge some together into a list of poly-lines.
+
+    It tries to find ends of two segments which are near to each other and also attached to aligned lines.
+    """
     connected_segments = find_connectors(lines)
 
     polys: List[PolyLine] = []
@@ -80,6 +95,11 @@ def trace_filaments(lines: List[lsm.LineSegment]) -> List[PolyLine]:
 
 
 def find_connectors(lines: List[lsm.LineSegment]) -> Dict[lsm.LineSegment, Tuple[List[Connector], List[Connector]]]:
+    """
+    For every pair of lines, checks whether any of the pairs of ends could be connected together.
+
+    For each segment, returns all the valid connectors for each end of the line.
+    """
     # A mapping of line segments to connectors attached to them
     # Each value is a tuple containing connectors on (p1, p2)
     connected_segments: Dict[lsm.LineSegment, Tuple[List[Connector], List[Connector]]] = defaultdict(lambda: ([], []))
